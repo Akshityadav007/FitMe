@@ -1,69 +1,140 @@
 # FitMe
 
-FitMe is a Flutter mobile application backed by FastAPI and PostgreSQL
-that acts as an AI-assisted nutrition, hydration, recovery, and
-fitness-adherence coach.
+> AI-assisted personal nutrition, hydration, recovery, and fitness
+> adherence coach.
 
-The application is built around a simple principle:
+FitMe is a Flutter mobile application backed by FastAPI and PostgreSQL.
+It combines structured fitness data with an AI coaching layer to help
+users make better day-to-day nutrition and recovery decisions.
 
-> The application owns facts and deterministic calculations. The AI
-> interprets those facts and coaches the user.
+## Why FitMe?
 
-## Current user profile
+Most AI fitness apps are essentially chat interfaces with a prompt.
 
--   Age: 27
--   Sex: Male
--   Height: 181 cm
--   Weight: 82.7 kg
--   Body fat: 24.5%
--   Visceral fat: 9
--   Muscle: 32.8%
--   BMI: 25.2
--   Goal: body recomposition
--   Diet: eggetarian + chicken
--   Spicy food: not preferred
--   Activity: desk job, approximately 3--5k steps/day
--   Training: heavy resistance training; workout program is provided by
-    a real trainer and must not be replaced by the AI
--   Cardio: currently approximately 20 minutes treadmill, 4.5 km/h, 10%
-    incline
--   Rest day: Friday
--   Wake: \~06:00
--   Gym: \~06:30--09:30
--   Work: \~10:00--10:30 to \~17:00--18:00
--   Lunch: \~13:00--13:30
--   Snack: \~16:00--18:00
--   Dinner: \~19:00--21:00
--   Sleep: \~22:00--23:00
--   Water: currently \~2--3 L/day
--   Pre-workout: half cup black coffee
--   Optional evening drink: half cup tea
--   Office provides breakfast, lunch, and snacks
--   Dinner is self-cooked or prepared by a maid
--   User currently tracks sleep manually; future
-    wearable/health-platform integration is planned
--   User currently uses whey protein isolate
--   No stated medical conditions, food allergies, or medication
-    constraints
+FitMe takes a different approach:
 
-## Initial nutrition targets
+> The application owns facts and deterministic calculations.
+> The AI interprets those facts and coaches the user.
 
-These are starting targets, not permanent truths:
+This means calories, macros, hydration, weight trends, and other
+deterministic metrics are calculated by the backend rather than guessed
+by an LLM.
 
--   Calories: \~2350 kcal/day
--   Protein: \~175 g/day
--   Fat: \~70 g/day
--   Carbohydrates: \~260 g/day
--   Water: \~2.5--3.5 L/day
--   Steps: gradually work toward \~7--8k/day
+## Architecture
 
-The app must treat these as configurable targets stored in the database.
-Do not hardcode them into prompts or business logic.
+```text
+Flutter
+   │
+   ▼
+FastAPI
+   │
+   ├── PostgreSQL
+   ├── Redis
+   ├── Object Storage
+   │
+   └── AI Coach
+          │
+          ▼
+      OpenAI API
+```
 
-The 1810 kcal "maintenance/RM" value reported by the user's
-body-composition device must not be treated as authoritative
-maintenance. The application should eventually estimate actual
-maintenance from longitudinal weight and intake data.
+## Core Features
+- Daily nutrition tracking
+- AI-powered meal recommendations
+- Office menu/food photo recognition
+- Calorie and macro tracking
+- Hydration tracking
+- Weight tracking
+- Sleep tracking
+- Workout logging
+- Daily coaching
+- Weekly progress analysis
+- Proactive reminders
+- Future wearable/health-platform integrations
+
+## Tech Stack
+
+### Mobile
+- Flutter
+- Dart
+- Riverpod
+
+### Backend
+- Python
+- FastAPI
+- SQLAlchemy
+- PostgreSQL
+- Alembic
+- Redis
+
+### AI
+- OpenAI API
+- Vision-based food/menu extraction
+- Structured AI tool calling
+
+## Infrastructure
+- Docker
+- Object storage
+- GitHub Actions
+
+## Engineering Principles
+- Deterministic calculations stay deterministic.
+- The LLM is not the source of truth.
+- The LLM does not have unrestricted database access.
+- Business logic belongs in the backend.
+- Mobile UI does not contain business logic.
+- AI responses are grounded in structured application state.
+- Security and validation happen outside the model.
+
+## Development Status
+
+### Phase 0 — Foundation ✅
+
+- FastAPI foundation
+- PostgreSQL
+- SQLAlchemy
+- Alembic
+- Redis
+- Flutter application shell
+- API client boundary
+- Health endpoint
+- Automated tests
+- Docker development environment
+
+### Upcoming
+
+-  Authentication and user profile
+-  Daily fitness logging
+-  Nutrition engine
+-  Office menu recognition
+-  AI coaching
+-  Proactive notifications
+-  Weekly analytics
+-  Health/wearable integrations
+
+
+
+## Product Context
+
+FitMe is initially being developed as a personal fitness coaching
+application, with the architecture designed so that user-specific
+fitness data is stored in the application rather than embedded in
+source code.
+
+The system supports configurable:
+
+- Body metrics
+- Fitness goals
+- Dietary preferences
+- Nutrition targets
+- Activity levels
+- Training schedules
+- Hydration targets
+- Sleep data
+- Weight history
+
+Initial development uses a synthetic/local development profile.
+Real user data is never committed to the repository.
 
 ## Primary user experience
 
@@ -86,6 +157,24 @@ The user should be able to:
 14. Receive proactive coaching and reminders.
 15. Review daily and weekly progress.
 
+## Project Structure
+
+```text
+fitme/
+├── backend/
+├── mobile/
+├── docs/
+├── AGENTS.md
+├── ARCHITECTURE.md
+├── PRODUCT_SPEC.md
+└── DEVELOPMENT_PLAN.md
+```
+
+## Development
+
+See ARCHITECTURE.md for the system design and
+DEVELOPMENT_PLAN.md for the implementation roadmap.
+
 ## Important product boundary
 
 FitMe is a nutrition/recovery/adherence coach.
@@ -96,9 +185,3 @@ The AI must not invent, modify, or prescribe the user's
 resistance-training program unless the user explicitly asks for general
 information and the response is clearly framed as informational. The
 existing trainer's workout plan remains authoritative.
-
-## Engineering principle
-
-Do not build a chatbot with a database attached.
-
-Build a structured fitness application with an AI coach on top.
