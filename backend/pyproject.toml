@@ -1,0 +1,29 @@
+[project]
+name = "fitme-backend"
+version = "0.1.0"
+description = "FastAPI backend for FitMe."
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.13.3",
+    "asyncpg>=0.30.0",
+    "fastapi>=0.115.0",
+    "pydantic-settings>=2.6.0",
+    "sqlalchemy>=2.0.36",
+    "uvicorn[standard]>=0.32.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.27.2",
+    "pytest>=8.3.3",
+    "pytest-asyncio>=0.24.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"

@@ -1,0 +1,1 @@
+"""FitMe backend application package."""
