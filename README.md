@@ -88,6 +88,8 @@ FastAPI
 
 ## Development Status
 
+### Completed phases
+
 ### Phase 0 — Foundation ✅
 
 - FastAPI foundation
@@ -101,16 +103,56 @@ FastAPI
 - Automated tests
 - Docker development environment
 
+### Phase 1 — Authentication and profile ✅
+
+- Registration and login
+- Authenticated sessions with JWT
+- User profile and fitness baseline storage
+- Dietary preferences
+- Nutrition targets
+- Protected API routes for profile access and updates
+
+### Phase 2 — Daily logging ✅
+
+- Weight logging
+- Water logging
+- Daily summary aggregation
+- Food entry logging for meals
+
+### Phase 3 — Nutrition engine ✅
+
+- Food database and nutrition records
+- Food-entry model and calculation logic
+- Deterministic macro totals for entries and daily summaries
+
+### Phase 4 — Office menu capture ✅
+
+- Menu image records
+- Extracted menu item storage
+- Structured item metadata with confidence values
+- API layer for menu capture flows
+
+### Phase 5 — Office meal recommendations ✅
+
+- Current-day context built from logged entries and targets
+- Available menu context for the requested day
+- Deterministic server-side recommendation service
+- Structured coaching endpoint (`POST /api/v1/recommendations`)
+- Recommendations grounded in remaining calories, protein, macros,
+  dietary preferences, meal context, and available menu data
+- Uncertainty preserved for low-confidence extracted menu items
+
 ### Upcoming
 
--  Authentication and user profile
--  Daily fitness logging
--  Nutrition engine
--  Office menu recognition
--  AI coaching
--  Proactive notifications
--  Weekly analytics
--  Health/wearable integrations
+- Phase 6 — AI coach
+- Phase 7 — Proactive coaching
+- Phase 8 — Weekly progress
+- Phase 9 — Polish
+- Phase 10 — Future integrations
+
+### Current repository state
+
+The backend now includes the core user/auth/profile foundation and the next deterministic logging, food, and menu domains required by the product. Phase 5 added deterministic, server-side meal recommendations grounded in the current day's targets, logged entries, and available office menu. The project should continue from Phase 6 in order, without skipping phases or broadening scope beyond the defined roadmap.
 
 
 
