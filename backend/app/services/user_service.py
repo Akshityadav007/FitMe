@@ -1,13 +1,9 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
-
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import create_access_token, hash_password, verify_password
-from app.models.nutrition_target import NutritionTarget
-from app.models.profile import UserProfile
 from app.models.user import User
 from app.repositories.user_repository import UserRepository
 from app.schemas.auth import AuthResponse, UserSummary

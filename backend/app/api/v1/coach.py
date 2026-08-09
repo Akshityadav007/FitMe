@@ -3,7 +3,8 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.ai.client import LLMClient, OpenAIClient
+from app.ai.client import LLMClient
+from app.ai.provider import AICapability, build_provider_registry
 from app.api.v1.profile import get_current_user_id
 from app.core.config import get_settings
 from app.db.session import get_db_session
@@ -15,15 +16,19 @@ router = APIRouter(prefix="/coach", tags=["coach"])
 
 async def get_llm_client() -> LLMClient:
     settings = get_settings()
-    if not settings.openai_api_key:
+    provider = build_provider_registry(settings).get(
+        AICapability.COACH,
+        preferred=getattr(settings, "ai_coach_provider", "auto"),
+    )
+    if provider is None:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail=(
-                "AI coach is not configured. Set FITME_OPENAI_API_KEY in the "
-                "backend environment."
+                "AI coach is not configured. Set FITME_OPENAI_API_KEY or "
+                "FITME_OPENROUTER_API_KEY in the backend environment."
             ),
         )
-    return OpenAIClient(api_key=settings.openai_api_key, model=settings.openai_model)
+    return provider
 
 
 async def get_coach_service(

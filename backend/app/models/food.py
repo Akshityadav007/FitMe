@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 from uuid import uuid4
 
 from sqlalchemy import Date, DateTime, Float, ForeignKey, Integer, String
@@ -27,11 +27,11 @@ class Food(Base):
     fat_g: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
         nullable=False,
     )
 
-    entries: Mapped[list["FoodEntry"]] = relationship(back_populates="food")
+    entries: Mapped[list[FoodEntry]] = relationship(back_populates="food")
 
 
 class FoodEntry(Base):
@@ -61,7 +61,7 @@ class FoodEntry(Base):
     notes: Mapped[str | None] = mapped_column(String(500), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
         nullable=False,
     )
 

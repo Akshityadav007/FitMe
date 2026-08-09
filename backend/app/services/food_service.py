@@ -1,9 +1,12 @@
 from __future__ import annotations
 
-from datetime import date
-
 from app.repositories.food_repository import FoodRepository
-from app.schemas.food import FoodCreate, FoodEntryWithFoodCreate, FoodEntryWithFoodResponse, FoodResponse
+from app.schemas.food import (
+    FoodCreate,
+    FoodEntryWithFoodCreate,
+    FoodEntryWithFoodResponse,
+    FoodResponse,
+)
 
 
 class FoodService:

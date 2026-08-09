@@ -5,8 +5,12 @@ recommendation core from Phase 5.
 
 ## What was added
 
-- `app/ai/client.py` — `LLMClient` protocol, `OpenAIClient`, `ToolCall`,
-  and `LLMResult` dataclasses.
+- `app/ai/client.py` — `LLMClient` protocol, `ToolCall`, and `LLMResult`
+  dataclasses.
+- `app/ai/provider.py` — `AIProvider` interface with per-capability
+  routing: `OpenAIProvider`, `OpenRouterFreeProvider`, and a
+  `ProviderRegistry` that resolves the coach provider. Callers depend on
+  the `LLMClient` protocol, never on a vendor class.
 - `app/ai/prompts.py` — versioned system prompt
   (`SYSTEM_PROMPT_VERSION = "1"`), coach prompt, and weekly review
   prompt.
@@ -65,18 +69,26 @@ values.
 
 ## Error handling
 
-- No `FITME_OPENAI_API_KEY` configured → `503`
-- OpenAI authentication failure → `503`
+- No provider configured (no `FITME_OPENAI_API_KEY` /
+  `FITME_OPENROUTER_API_KEY`) → `503`
+- Provider authentication failure → `503`
 - Rate limit → `429`
-- Other OpenAI errors → `502`
+- Other provider errors → `502`
 - Tool loop exceeds `MAX_TOOL_ROUNDS` → `502`
 - Unknown conversation → `404`
 - Conversation owned by another user → `403`
 
 ## Configuration
 
-- `FITME_OPENAI_API_KEY` — required for live chat
-- `FITME_OPENAI_MODEL` — model name, default `gpt-4o-mini`
+- `FITME_OPENAI_API_KEY` or `FITME_OPENROUTER_API_KEY` — required for
+  live chat
+- `FITME_OPENAI_MODEL` — OpenAI model, default `gpt-4o-mini`
+- `FITME_OPENROUTER_COACH_MODEL` — OpenRouter model, default
+  `openrouter/free`
+- `FITME_AI_COACH_PROVIDER` — `"auto"` (first configured provider that
+  supports the capability) or a specific provider name
+
+See `app/ai/provider.py` and `docs/GAPS.md` for provider details.
 
 ## Tests
 

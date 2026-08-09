@@ -69,6 +69,8 @@ FastAPI
 
 ### AI
 - OpenAI API
+- OpenRouter (free model routing)
+- Provider abstraction with per-capability selection (coach vs. vision)
 - Vision-based food/menu extraction
 - Structured AI tool calling
 
@@ -102,6 +104,7 @@ FastAPI
 - Health endpoint
 - Automated tests
 - Docker development environment
+- GitHub Actions CI for backend and mobile
 
 ### Phase 1 — Authentication and profile ✅
 
@@ -201,13 +204,21 @@ logging (food, water, weight, steps, sleep, workouts), the nutrition
 engine, office menu capture (upload, vision extraction, confirmation,
 repeated-food detection), deterministic meal recommendations, the
 conversational AI coach, proactive notifications, and weekly progress.
-All 35 backend tests pass against PostgreSQL, and the schema is managed
+All 45 backend tests pass against PostgreSQL, and the schema is managed
 through Alembic migrations. The AI layer is fully mockable so CI never
-depends on a live model API; set `FITME_OPENAI_API_KEY` to enable live
-coaching. The Flutter client implements the Phase 9 screens end to end,
-with `flutter analyze` clean and passing widget/repository tests. Phase
-10 (wearables/health-platform integrations) is deferred by design until
-the core product is stable on device.
+depends on a live model API; set `FITME_OPENAI_API_KEY` and/or
+`FITME_OPENROUTER_API_KEY` to enable live coaching. Model providers are
+plugged in through a provider abstraction (`app/ai/provider.py`) with
+per-capability routing (coach vs. vision), so OpenAI, OpenRouter, and
+future providers can be swapped or mixed without touching callers. The
+Flutter client implements the Phase 9 screens end to end, with `flutter
+analyze` clean and passing widget/repository tests. Phase 10
+(wearables/health-platform integrations) is deferred by design until the
+core product is stable on device.
+
+Continuous integration runs the backend test suite (with a mockable AI
+layer and a PostgreSQL service container) and the Flutter analyze/test
+suite on every push and pull request.
 
 
 

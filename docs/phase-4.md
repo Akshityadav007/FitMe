@@ -17,10 +17,11 @@ menu items that can be logged as food entries.
 
 ### Vision extraction
 
-- `app/ai/vision.py` — `VisionClient` protocol with an
-  `OpenAIVisionClient` implementation and a pure `parse_vision_response`
-  helper. Output is validated and clamped so garbage model output cannot
-  produce negative macros or confidence outside [0, 1].
+- `app/ai/vision.py` — `VisionClient` protocol and a pure
+  `parse_vision_response` helper. Output is validated and clamped so
+  garbage model output cannot produce negative macros or confidence
+  outside [0, 1]. The provider-backed vision implementation lives in
+  `app/ai/provider.py` (`OpenAIProvider` / `OpenRouterFreeProvider`).
 - `app/ai/prompts.py` — versioned vision prompt
   (`VISION_PROMPT_VERSION = "1"`). Extraction is mocked in tests via
   `app.dependency_overrides[get_vision_extractor]`.
@@ -61,7 +62,10 @@ Otherwise a new food is created from the extracted estimates.
 
 - `FITME_UPLOAD_DIR` — local upload directory (default `./data/uploads`)
 - `FITME_MAX_UPLOAD_BYTES` — upload size limit (default 10 MB)
-- `FITME_OPENAI_API_KEY` + `FITME_OPENAI_VISION_MODEL` — live vision
+- `FITME_OPENAI_API_KEY` + `FITME_OPENAI_VISION_MODEL`, or
+  `FITME_OPENROUTER_API_KEY` + `FITME_OPENROUTER_VISION_MODEL` — live
+  vision provider
+- `FITME_AI_VISION_PROVIDER` — `"auto"` or a specific provider name
 
 ## Tests
 

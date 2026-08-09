@@ -21,7 +21,13 @@ FastAPI Backend
  AI Coach Service
         |
         v
- OpenAI API
+ AI Provider Abstraction
+        |
+        +----------------+
+        |                |
+        v                v
+ OpenAI Provider  OpenRouter Free Provider
+ (and other providers, future)
 ```
 
 The architecture should remain modular without prematurely becoming
@@ -61,10 +67,29 @@ abstraction.
 
 ### AI
 
-Use the OpenAI API through a dedicated backend service.
+Use model providers through a dedicated backend service and provider
+abstraction (`app/ai/provider.py`).
 
-The mobile application must never call OpenAI directly with the secret
-API key.
+The mobile application must never call a model provider directly with
+the secret API key.
+
+Providers advertise the capabilities they serve (coach chat, vision
+extraction). A `ProviderRegistry` resolves the right provider per
+capability based on configuration, so different models can be used for
+image processing vs. reasoning without touching the rest of the app:
+
+``` text
+AIProvider (interface)
+├── OpenAICompatibleProvider  (shared implementation)
+│   ├── OpenAIProvider
+│   └── OpenRouterFreeProvider
+└── OtherProvider  (future)
+```
+
+Selection is controlled by `FITME_AI_COACH_PROVIDER` /
+`FITME_AI_VISION_PROVIDER` (`"auto"` picks the first configured provider
+that supports the capability). Providers without an API key are not
+registered.
 
 ## 3. Repository structure
 
@@ -218,11 +243,15 @@ Responsible for:
 
 -   Coach context construction
 -   Prompt management
--   OpenAI calls
+-   Provider abstraction and capability routing
 -   Tool definitions
 -   Tool execution orchestration
 -   Response validation
 -   Conversation history
+
+Provider integration lives in `app/ai/provider.py`. Callers depend on
+the `AIProvider` interface or capability-specific protocols, never on a
+specific vendor class.
 
 ## 6. Suggested database entities
 

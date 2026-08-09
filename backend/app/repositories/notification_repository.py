@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import UTC
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -77,7 +79,7 @@ class NotificationRepository:
         return list(result.scalars().all())
 
     async def mark_read(self, *, notification_id: str, user_id: str) -> Notification | None:
-        from datetime import datetime, timezone
+        from datetime import datetime
 
         result = await self.session.execute(
             select(Notification).where(
@@ -87,6 +89,6 @@ class NotificationRepository:
         )
         notification = result.scalar_one_or_none()
         if notification is not None:
-            notification.read_at = datetime.now(timezone.utc)
+            notification.read_at = datetime.now(UTC)
             await self.session.flush()
         return notification

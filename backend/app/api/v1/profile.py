@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.session import get_db_session
 from app.core.security import decode_access_token
+from app.db.session import get_db_session
 from app.schemas.profile import UserProfileResponse, UserProfileUpdate
 from app.services.user_service import UserService
 

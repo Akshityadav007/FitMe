@@ -22,6 +22,12 @@ class Settings(BaseSettings):
     openai_api_key: str | None = None
     openai_model: str = "gpt-4o-mini"
     openai_vision_model: str = "gpt-4o-mini"
+    openrouter_api_key: str | None = None
+    openrouter_base_url: str = "https://openrouter.ai/api/v1"
+    openrouter_coach_model: str = "openrouter/free"
+    openrouter_vision_model: str | None = None
+    ai_coach_provider: str = "auto"
+    ai_vision_provider: str = "auto"
     upload_dir: str = "./data/uploads"
     max_upload_bytes: int = 10 * 1024 * 1024
 

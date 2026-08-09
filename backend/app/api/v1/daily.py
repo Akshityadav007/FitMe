@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from datetime import date
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.v1.profile import get_current_user_id
 from app.db.session import get_db_session
 from app.schemas.daily import (
     DailySummaryResponse,
@@ -22,7 +23,6 @@ from app.schemas.daily import (
     WorkoutSessionResponse,
 )
 from app.services.daily_service import DailyService
-from app.api.v1.profile import get_current_user_id
 
 router = APIRouter(prefix="/daily", tags=["daily"])
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import uuid4
 
 from sqlalchemy import DateTime, Float, ForeignKey, Integer, String
@@ -24,11 +24,11 @@ class MenuImage(Base):
     image_url: Mapped[str] = mapped_column(String(500), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
         nullable=False,
     )
 
-    items: Mapped[list["MenuImageItem"]] = relationship(back_populates="menu_image")
+    items: Mapped[list[MenuImageItem]] = relationship(back_populates="menu_image")
 
 
 class MenuImageItem(Base):
@@ -54,7 +54,7 @@ class MenuImageItem(Base):
     confidence: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
         nullable=False,
     )
 

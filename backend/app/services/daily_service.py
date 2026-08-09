@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from datetime import date
 
-from fastapi import HTTPException, status
-
 from app.repositories.daily_repository import DailyRepository
 from app.schemas.daily import (
     DailySummaryResponse,

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, time, timezone
+from datetime import UTC, datetime, time
 from uuid import uuid4
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, String, Time
@@ -33,13 +33,13 @@ class NotificationPreference(Base):
     quiet_hours_end: Mapped[time] = mapped_column(Time, nullable=False, default=time(7, 0))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
         nullable=False,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
         nullable=False,
     )
 
@@ -60,7 +60,7 @@ class Notification(Base):
     day_key: Mapped[str] = mapped_column(String(10), nullable=False, index=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
         nullable=False,
     )
     read_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date
 
 from app.repositories.food_repository import FoodRepository
 from app.repositories.menu_repository import MenuRepository
 from app.repositories.user_repository import UserRepository
 from app.schemas.recommendation import (
     MacroTotals,
-    RecommendedItem,
     RecommendationRequest,
+    RecommendedItem,
     StructuredCoachResponse,
 )
 

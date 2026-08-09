@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from fastapi import HTTPException, status
 from jose import JWTError, jwt
@@ -21,7 +21,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 def create_access_token(subject: str) -> str:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     expires = now + timedelta(minutes=settings.access_token_expire_minutes)
     payload = {"sub": subject, "iat": now, "exp": expires}
     return jwt.encode(payload, settings.secret_key, algorithm=settings.jwt_algorithm)

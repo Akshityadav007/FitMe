@@ -31,3 +31,12 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 88
 target-version = "py312"
+
+[tool.ruff.lint]
+# B008: FastAPI Depends() default values are an intentional convention.
+# DTZ011: date.today() in test fixtures is intentional.
+ignore = ["B008", "DTZ011"]
+
+[tool.ruff.lint.per-file-ignores]
+# F821: string forward references in SQLAlchemy relationship annotations.
+"app/models/*.py" = ["F821"]

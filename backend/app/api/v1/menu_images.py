@@ -28,17 +28,20 @@ def get_vision_extractor():
 
     Overridable in tests via app.dependency_overrides to avoid live API
     calls in CI."""
-    from app.ai.vision import OpenAIVisionClient
+    from app.ai.provider import AICapability, build_provider_registry
     from app.core.config import get_settings
 
     settings = get_settings()
-    if not settings.openai_api_key:
+    provider = build_provider_registry(settings).get(
+        AICapability.VISION,
+        preferred=getattr(settings, "ai_vision_provider", "auto"),
+    )
+    if provider is None:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Vision extraction is not configured.",
         )
-    client = OpenAIVisionClient(api_key=settings.openai_api_key, model=settings.openai_vision_model)
-    return client.extract_menu_items
+    return provider.extract_menu_items
 
 
 async def get_menu_service(

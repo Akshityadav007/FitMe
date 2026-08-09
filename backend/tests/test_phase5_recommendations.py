@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta
 
 import pytest
 from httpx import ASGITransport, AsyncClient
@@ -134,7 +134,7 @@ async def test_recommendation_grounded_in_daily_state() -> None:
     try:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            _, token, headers = await _register_user(client, "recommend@example.com")
+            _, _token, headers = await _register_user(client, "recommend@example.com")
             profile = await client.put(
                 "/api/v1/profile/me",
                 json={"dietary_preferences": "Eggetarian + chicken; Spicy food not preferred"},
@@ -235,7 +235,7 @@ async def test_recommendation_no_menu_returns_uncertain_response() -> None:
     try:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            _, token, headers = await _register_user(client, "nomenu@example.com")
+            _, _token, headers = await _register_user(client, "nomenu@example.com")
             today = date.today().isoformat()
 
             resp = await client.post(
@@ -261,7 +261,7 @@ async def test_recommendation_at_or_over_calorie_target() -> None:
     try:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            _, token, headers = await _register_user(client, "overtarget@example.com")
+            _, _token, headers = await _register_user(client, "overtarget@example.com")
 
             targets = await client.put(
                 "/api/v1/nutrition-targets/me",
@@ -318,7 +318,7 @@ async def test_recommendation_ignores_menu_from_other_days() -> None:
                     source="camera",
                     status="pending",
                     image_url="https://example.com/stale.png",
-                    created_at=datetime.now(timezone.utc) - timedelta(days=1),
+                    created_at=datetime.now(UTC) - timedelta(days=1),
                 )
                 session.add(stale)
                 await session.flush()

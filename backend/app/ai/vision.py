@@ -1,13 +1,8 @@
 from __future__ import annotations
 
-import base64
 import json
 from dataclasses import dataclass
 from typing import Protocol
-
-import openai
-
-from app.ai.prompts import VISION_SYSTEM_PROMPT
 
 
 @dataclass(frozen=True)
@@ -27,41 +22,6 @@ class VisionClient(Protocol):
         image_bytes: bytes,
         content_type: str,
     ) -> list[VisionMenuItem]: ...
-
-
-class OpenAIVisionClient:
-    def __init__(self, api_key: str, model: str) -> None:
-        self._client = openai.AsyncOpenAI(api_key=api_key)
-        self._model = model
-
-    async def extract_menu_items(
-        self,
-        *,
-        image_bytes: bytes,
-        content_type: str,
-    ) -> list[VisionMenuItem]:
-        mime_type = content_type.split(";")[0].strip() or "image/jpeg"
-        base64_image = base64.b64encode(image_bytes).decode("ascii")
-
-        response = await self._client.chat.completions.create(
-            model=self._model,
-            messages=[
-                {"role": "system", "content": VISION_SYSTEM_PROMPT},
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "image_url",
-                            "image_url": {"url": f"data:{mime_type};base64,{base64_image}"},
-                        }
-                    ],
-                },
-            ],
-            response_format={"type": "json_object"},
-        )
-
-        content = response.choices[0].message.content or "{}"
-        return parse_vision_response(content)
 
 
 def parse_vision_response(content: str) -> list[VisionMenuItem]:
