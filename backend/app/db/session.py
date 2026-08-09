@@ -6,14 +6,20 @@ from app.core.config import get_settings
 
 settings = get_settings()
 
-engine = create_async_engine(str(settings.database_url), pool_pre_ping=True)
-AsyncSessionLocal = async_sessionmaker(
-    bind=engine,
-    expire_on_commit=False,
-    autoflush=False,
-)
+
+def build_session_factory() -> async_sessionmaker[AsyncSession]:
+    engine = create_async_engine(str(settings.database_url), pool_pre_ping=True)
+    return async_sessionmaker(
+        bind=engine,
+        expire_on_commit=False,
+        autoflush=False,
+    )
 
 
 async def get_db_session() -> AsyncIterator[AsyncSession]:
-    async with AsyncSessionLocal() as session:
-        yield session
+    session_factory = build_session_factory()
+    async with session_factory() as session:
+        try:
+            yield session
+        finally:
+            await session.close()

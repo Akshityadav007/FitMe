@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+import app.models  # noqa: F401  # register SQLAlchemy models before migrations/tests
 from app.api.v1.router import api_router
 from app.core.config import get_settings
 
