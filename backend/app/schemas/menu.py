@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import date
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -16,6 +18,10 @@ class MenuImageResponse(MenuImageCreate):
     user_id: str
 
 
+class MenuImageDetailResponse(MenuImageResponse):
+    items: list[MenuImageItemResponse] = []
+
+
 class MenuImageItemCreate(BaseModel):
     name: str
     estimated_calories: int = Field(ge=0)
@@ -30,3 +36,16 @@ class MenuImageItemResponse(MenuImageItemCreate):
 
     id: str
     menu_image_id: str
+
+
+class MenuItemConfirmCreate(BaseModel):
+    date: date
+    meal_type: str = "meal"
+    quantity_g: float = Field(gt=0)
+    notes: str | None = None
+
+
+class MenuImageProcessResponse(BaseModel):
+    id: str
+    status: str
+    items: list[MenuImageItemResponse]

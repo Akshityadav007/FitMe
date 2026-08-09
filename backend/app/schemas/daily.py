@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -60,3 +60,49 @@ class DailySummaryResponse(BaseModel):
     carbs_g: int = 0
     fat_g: int = 0
     steps: int = 0
+    sleep_minutes: int | None = None
+    workout_sessions: int = 0
+
+
+class StepsEntryCreate(BaseModel):
+    date: date
+    steps: int = Field(ge=0)
+
+
+class StepsEntryResponse(StepsEntryCreate):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    user_id: str
+
+
+class SleepEntryCreate(BaseModel):
+    date: date
+    bed_time: datetime | None = None
+    wake_time: datetime | None = None
+    duration_minutes: int = Field(ge=0)
+    quality: int | None = Field(default=None, ge=1, le=5)
+
+
+class SleepEntryResponse(SleepEntryCreate):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    user_id: str
+    source: str
+
+
+class WorkoutSessionCreate(BaseModel):
+    date: date
+    name: str
+    start_time: datetime | None = None
+    end_time: datetime | None = None
+    duration_minutes: int | None = Field(default=None, ge=0)
+    notes: str | None = None
+
+
+class WorkoutSessionResponse(WorkoutSessionCreate):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    user_id: str

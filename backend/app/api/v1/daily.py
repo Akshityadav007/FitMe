@@ -10,10 +10,16 @@ from app.schemas.daily import (
     DailySummaryResponse,
     FoodEntryCreate,
     FoodEntryResponse,
+    SleepEntryCreate,
+    SleepEntryResponse,
+    StepsEntryCreate,
+    StepsEntryResponse,
     WaterEntryCreate,
     WaterEntryResponse,
     WeightEntryCreate,
     WeightEntryResponse,
+    WorkoutSessionCreate,
+    WorkoutSessionResponse,
 )
 from app.services.daily_service import DailyService
 from app.api.v1.profile import get_current_user_id
@@ -67,3 +73,36 @@ async def get_summary(
     service: DailyService = Depends(get_daily_service),
 ) -> DailySummaryResponse:
     return await service.get_daily_summary(user_id=user_id, target_date=date)
+
+
+@router.post("/steps", response_model=StepsEntryResponse)
+async def create_steps(
+    payload: StepsEntryCreate,
+    user_id: str = Depends(get_current_user_id),
+    service: DailyService = Depends(get_daily_service),
+) -> StepsEntryResponse:
+    response = await service.record_steps(user_id=user_id, payload=payload)
+    await service.session.commit()
+    return response
+
+
+@router.post("/sleep", response_model=SleepEntryResponse)
+async def create_sleep(
+    payload: SleepEntryCreate,
+    user_id: str = Depends(get_current_user_id),
+    service: DailyService = Depends(get_daily_service),
+) -> SleepEntryResponse:
+    response = await service.record_sleep(user_id=user_id, payload=payload)
+    await service.session.commit()
+    return response
+
+
+@router.post("/workout", response_model=WorkoutSessionResponse)
+async def create_workout(
+    payload: WorkoutSessionCreate,
+    user_id: str = Depends(get_current_user_id),
+    service: DailyService = Depends(get_daily_service),
+) -> WorkoutSessionResponse:
+    response = await service.record_workout(user_id=user_id, payload=payload)
+    await service.session.commit()
+    return response

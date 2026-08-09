@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'features/health/health_screen.dart';
+import 'features/home/home_shell.dart';
 
 class FitMeApp extends StatelessWidget {
   const FitMeApp({super.key});
@@ -13,7 +13,7 @@ class FitMeApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF256D5A)),
         useMaterial3: true,
       ),
-      home: const HealthScreen(),
+      home: const HomeShell(),
     );
   }
 }

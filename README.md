@@ -127,10 +127,14 @@ FastAPI
 
 ### Phase 4 — Office menu capture ✅
 
-- Menu image records
-- Extracted menu item storage
-- Structured item metadata with confidence values
-- API layer for menu capture flows
+- Camera/gallery selection
+- Image upload with object-storage abstraction (local filesystem backend)
+- File type, size, and status validation
+- Menu processing state (pending → processing → extracted → failed)
+- AI vision extraction to structured items
+- Versioned vision prompt (`VISION_PROMPT_VERSION`)
+- User confirmation of extracted items → food entries
+- Food normalization and repeated-food detection (trusted nutrition wins)
 
 ### Phase 5 — Office meal recommendations ✅
 
@@ -142,17 +146,68 @@ FastAPI
   dietary preferences, meal context, and available menu data
 - Uncertainty preserved for low-confidence extracted menu items
 
+### Phase 6 — AI coach ✅
+
+- Dedicated AI service with mocked-LLM testability
+- Versioned system prompt (`SYSTEM_PROMPT_VERSION`)
+- Deterministic `CoachContext` snapshot (never the whole database)
+- 13 validated AI tools with server-side Pydantic argument validation
+- Tool-calling loop with conversation history and persistence
+- Chat endpoint (`POST /api/v1/coach/chat`)
+- Structured AI response schema and error mapping (503/429/502/404/403)
+
+### Phase 7 — Proactive coaching ✅
+
+- Hydration reminders
+- Protein status
+- Meal reminders
+- End-of-day summary
+- Configurable notification preferences
+- Quiet hours (default 22:00–07:00)
+- Per-day, per-category deduplication (no spam)
+
+### Phase 8 — Weekly progress ✅
+
+- Weight chart data, 7-day average, trend, and rate of change
+- Average calories and protein adherence
+- Water, steps, sleep, and training adherence
+- Deterministic weekly aggregates
+- Weekly AI review (`POST /api/v1/progress/weekly/review`)
+
+### Phase 9 — Mobile client & polish ✅
+
+- Auth-gated app shell with login/register and JWT session storage
+- 8-tab navigation: Today, Suggest, Coach, Progress, Menu, Alerts,
+  Profile, Targets
+- Daily summary screen with quick logging (water, food, steps, sleep,
+  workout, weight)
+- Menu recommendation screen grounded in remaining targets
+- Conversational AI coach screen with structured reply rendering
+- Menu capture screen (camera/gallery → upload → extraction → confirm)
+- Weekly progress screen with adherence breakdown
+- Notification preferences + list + manual check + mark-read
+- Profile editing and nutrition targets editing
+- Loading, empty, and error states on every screen
+- `flutter analyze` clean; unit tests pass with a mocked HTTP client
+
 ### Upcoming
 
-- Phase 6 — AI coach
-- Phase 7 — Proactive coaching
-- Phase 8 — Weekly progress
-- Phase 9 — Polish
 - Phase 10 — Future integrations
 
 ### Current repository state
 
-The backend now includes the core user/auth/profile foundation and the next deterministic logging, food, and menu domains required by the product. Phase 5 added deterministic, server-side meal recommendations grounded in the current day's targets, logged entries, and available office menu. The project should continue from Phase 6 in order, without skipping phases or broadening scope beyond the defined roadmap.
+The backend implements Phases 0–8 of the roadmap: auth/profile, daily
+logging (food, water, weight, steps, sleep, workouts), the nutrition
+engine, office menu capture (upload, vision extraction, confirmation,
+repeated-food detection), deterministic meal recommendations, the
+conversational AI coach, proactive notifications, and weekly progress.
+All 35 backend tests pass against PostgreSQL, and the schema is managed
+through Alembic migrations. The AI layer is fully mockable so CI never
+depends on a live model API; set `FITME_OPENAI_API_KEY` to enable live
+coaching. The Flutter client implements the Phase 9 screens end to end,
+with `flutter analyze` clean and passing widget/repository tests. Phase
+10 (wearables/health-platform integrations) is deferred by design until
+the core product is stable on device.
 
 
 

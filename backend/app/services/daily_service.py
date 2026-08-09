@@ -5,7 +5,21 @@ from datetime import date
 from fastapi import HTTPException, status
 
 from app.repositories.daily_repository import DailyRepository
-from app.schemas.daily import DailySummaryResponse, FoodEntryCreate, FoodEntryResponse, WaterEntryCreate, WaterEntryResponse, WeightEntryCreate, WeightEntryResponse
+from app.schemas.daily import (
+    DailySummaryResponse,
+    FoodEntryCreate,
+    FoodEntryResponse,
+    SleepEntryCreate,
+    SleepEntryResponse,
+    StepsEntryCreate,
+    StepsEntryResponse,
+    WaterEntryCreate,
+    WaterEntryResponse,
+    WeightEntryCreate,
+    WeightEntryResponse,
+    WorkoutSessionCreate,
+    WorkoutSessionResponse,
+)
 
 
 class DailyService:
@@ -34,6 +48,10 @@ class DailyService:
     async def get_daily_summary(self, *, user_id: str, target_date: date) -> DailySummaryResponse:
         weight = await self.repository.get_weight_for_date(user_id=user_id, target_date=target_date)
         water = await self.repository.get_water_for_date(user_id=user_id, target_date=target_date)
+        steps = await self.repository.get_steps_for_date(user_id=user_id, target_date=target_date)
+        sleep = await self.repository.get_sleep_for_date(user_id=user_id, target_date=target_date)
+        workouts = await self.repository.list_workouts_since(user_id=user_id, start_date=target_date)
+        workout_count = sum(1 for w in workouts if w.date == target_date)
 
         food_entries = await self._get_food_entries(user_id=user_id, target_date=target_date)
         total_calories = sum(entry.calories for entry in food_entries)
@@ -49,7 +67,9 @@ class DailyService:
             protein_g=total_protein,
             carbs_g=total_carbs,
             fat_g=total_fat,
-            steps=0,
+            steps=steps.steps if steps else 0,
+            sleep_minutes=sleep.duration_minutes if sleep else None,
+            workout_sessions=workout_count,
         )
 
     async def _get_food_entries(self, *, user_id: str, target_date: date):
@@ -90,3 +110,53 @@ class DailyService:
         from app.repositories.food_repository import FoodRepository
 
         return FoodRepository(self.session)
+
+    async def record_steps(self, *, user_id: str, payload: StepsEntryCreate) -> StepsEntryResponse:
+        row = await self.repository.upsert_steps(user_id=user_id, target_date=payload.date, steps=payload.steps)
+        return StepsEntryResponse(
+            id=row.id,
+            user_id=row.user_id,
+            date=row.date,
+            steps=row.steps,
+        )
+
+    async def record_sleep(self, *, user_id: str, payload: SleepEntryCreate) -> SleepEntryResponse:
+        row = await self.repository.upsert_sleep(
+            user_id=user_id,
+            target_date=payload.date,
+            bed_time=payload.bed_time,
+            wake_time=payload.wake_time,
+            duration_minutes=payload.duration_minutes,
+            quality=payload.quality,
+        )
+        return SleepEntryResponse(
+            id=row.id,
+            user_id=row.user_id,
+            date=row.date,
+            bed_time=row.bed_time,
+            wake_time=row.wake_time,
+            duration_minutes=row.duration_minutes,
+            quality=row.quality,
+            source=row.source,
+        )
+
+    async def record_workout(self, *, user_id: str, payload: WorkoutSessionCreate) -> WorkoutSessionResponse:
+        row = await self.repository.create_workout(
+            user_id=user_id,
+            target_date=payload.date,
+            name=payload.name,
+            start_time=payload.start_time,
+            end_time=payload.end_time,
+            duration_minutes=payload.duration_minutes,
+            notes=payload.notes,
+        )
+        return WorkoutSessionResponse(
+            id=row.id,
+            user_id=row.user_id,
+            date=row.date,
+            name=row.name,
+            start_time=row.start_time,
+            end_time=row.end_time,
+            duration_minutes=row.duration_minutes,
+            notes=row.notes,
+        )
