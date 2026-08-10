@@ -212,11 +212,13 @@ class ProviderRegistry:
     ) -> AIProvider | None:
         """Resolve a provider for a capability.
 
-        When ``preferred`` is a provider name it wins if it supports the
-        capability; otherwise the first configured provider that supports
-        the capability is returned.
+        ``preferred`` may be a provider name or the string ``"auto"``
+        (also used as the config default). When ``preferred`` is a
+        provider name it wins if it supports the capability; otherwise
+        the first configured provider that supports the capability is
+        returned.
         """
-        if preferred:
+        if preferred and preferred != "auto":
             provider = self._providers.get(preferred)
             if provider is not None and capability in provider.capabilities:
                 return provider

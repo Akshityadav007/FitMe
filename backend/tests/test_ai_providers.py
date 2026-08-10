@@ -64,6 +64,14 @@ def test_registry_auto_selects_first_supporting_provider() -> None:
     assert coach.name == "openrouter"
 
 
+def test_registry_preferred_auto_falls_through() -> None:
+    registry = ProviderRegistry()
+    registry.register(OpenRouterFreeProvider(api_key="k", coach_model="m"))
+    coach = registry.get(AICapability.COACH, preferred="auto")
+    assert coach is not None
+    assert coach.name == "openrouter"
+
+
 def test_registry_preferred_wins() -> None:
     registry = ProviderRegistry()
     registry.register(OpenRouterFreeProvider(api_key="k", coach_model="m"))

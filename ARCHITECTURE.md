@@ -7,12 +7,10 @@ Flutter Mobile App
         |
         | HTTPS / JSON
         v
-FastAPI Backend
+ FastAPI Backend
         |
-        +------------------+
-        |                  |
-        v                  v
-   PostgreSQL           Redis
+        v
+   PostgreSQL
         |
         v
  Object Storage
@@ -54,7 +52,7 @@ Use a modular monolith for the backend initially.
 -   SQLAlchemy
 -   Alembic
 -   PostgreSQL
--   Redis
+-   Alembic
 -   Background job mechanism where needed
 
 ### Storage

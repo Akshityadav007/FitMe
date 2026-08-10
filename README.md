@@ -29,7 +29,6 @@ Flutter
 FastAPI
    │
    ├── PostgreSQL
-   ├── Redis
    ├── Object Storage
    │
    └── AI Coach
@@ -65,7 +64,6 @@ FastAPI
 - SQLAlchemy
 - PostgreSQL
 - Alembic
-- Redis
 
 ### AI
 - OpenAI API
@@ -98,7 +96,6 @@ FastAPI
 - PostgreSQL
 - SQLAlchemy
 - Alembic
-- Redis
 - Flutter application shell
 - API client boundary
 - Health endpoint

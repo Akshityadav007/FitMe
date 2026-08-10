@@ -4,7 +4,7 @@ Phase 0 contains only the project foundation:
 
 - FastAPI application setup
 - environment-based configuration
-- PostgreSQL and Redis containers
+- PostgreSQL container
 - SQLAlchemy 2.x async session foundation
 - Alembic foundation
 - `GET /api/v1/health`
@@ -40,7 +40,7 @@ Run tests:
 From the repository root:
 
 ``` powershell
-docker compose up -d postgres redis
+docker compose up -d postgres
 ```
 
 Alembic is configured against `FITME_DATABASE_URL`. Phase 0 has no domain
